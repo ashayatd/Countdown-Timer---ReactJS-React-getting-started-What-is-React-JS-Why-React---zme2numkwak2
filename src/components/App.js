@@ -1,41 +1,46 @@
-import React, { Component, useState, useEffect } from “react”;
-import ‘../styles/App.css’;
+import React, { Component, useState, useEffect } from "react";
+import '../styles/App.css';
+
 const App = () => {
-  const [getTime,setTime]=useState(0);
-  let result=‘’;
-  // write your code here
-  useEffect(()=>{
-    if(getTime!=0){
-      result = setTimeout(()=>{
-        setTime(getTime-1);
-      },1000)
+  let timerId = ""
+  let [timeLeft, setTimeLeft] = useState(0);
+
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      timerId = setTimeout(() => {
+        setTimeLeft(timeLeft - 1)
+      }, 1000);
     }
-  },[getTime])
-  const onKeyboardEnter=(event)=>{
-      if(event.keyCode === 13){
-        let input = document.getElementById(“timeCount”).value;
-        console.log(input!=0);
-        if(!isNaN(input) && input!=0){
-          console.log(input);
-          setTime(parseInt(input));
+  }, [timeLeft])
+
+
+  const countInReverse = (e) => {
+    if (e.keyCode === 13) {
+      clearTimeout(timerId)
+      let timeCountValue = document.getElementById('timeCount').value;
+      if (!isNaN(timeCountValue)) {
+        setTimeLeft(parseInt(timeCountValue));
+      } else {
+        if (timerId !== "") {
+          clearTimeout(timerId)
         }
-        else{
-          setTime(0);
-          if(result!=“”)[
-            clearTimeout(result)
-          ]
-        }
+        setTimeLeft(0)
       }
+    }
   }
+
   return (
-    <div className=“wrapper”>
-      <div id=“whole-center”>
+    <div className="main">
+      <div id="whole-center">
         <h1>
-          Reverse countdown for<input id=“timeCount” onKeyDown={onKeyboardEnter} /> sec.
+          Reverse countdown for<input id="timeCount" onKeyDown={countInReverse} /> sec.
         </h1>
       </div>
-      <div id=“current-time”>{getTime}</div>
+      <div id="current-time">{timeLeft}</div>
     </div>
   )
 }
+
+
 export default App;
